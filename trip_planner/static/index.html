@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip Planner</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Trip Budget Planner</h1>
+    <label for="question">Ask a question about your trip:</label>
+    <textarea id="question" placeholder="e.g., Plan a 5‑day trip to Goa for 2 people with a budget of 30,000 INR."></textarea>
+    <button id="sendBtn">Send</button>
+    <div id="response"></div>
+</div>
+<script>
+    const sendBtn = document.getElementById('sendBtn');
+    const questionEl = document.getElementById('question');
+    const responseEl = document.getElementById('response');
+    sendBtn.addEventListener('click', async () => {
+        const question = questionEl.value.trim();
+        if (!question) return;
+        responseEl.textContent = '…thinking…';
+        try {
+            const res = await fetch('/ask', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question})
+            });
+            const data = await res.json();
+            responseEl.textContent = data.answer;
+        } catch (e) {
+            responseEl.textContent = 'Error: ' + e;
+        }
+    });
+</script>
+</body>
+</html>
